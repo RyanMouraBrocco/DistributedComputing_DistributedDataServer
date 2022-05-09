@@ -1,6 +1,5 @@
 from threading import Lock
-from os import unlink
-from flask import Flask, abort, request
+from flask import Flask
 from auth_middleware import authMiddleware
 
 app = Flask(__name__)

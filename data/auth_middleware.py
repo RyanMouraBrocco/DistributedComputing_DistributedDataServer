@@ -1,6 +1,4 @@
-from http.client import UNAUTHORIZED
-from os import abort
-from werkzeug.wrappers import Request, Response, ResponseStream
+from werkzeug.wrappers import Request, Response
 
 
 class authMiddleware():
