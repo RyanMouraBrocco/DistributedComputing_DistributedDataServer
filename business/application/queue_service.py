@@ -9,7 +9,7 @@ class QueueMessageServer:
         self.queue.put({"method": action, "parameters": actionParameters})
 
     def executeWhenNeeded(self):
-        if(self.queue.qsize() >= 5):
+        while(self.queue.qsize() >= 5):
             for i in range(0, 5):
                 nextAction = self.queue.get()
                 parameters = nextAction['parameters']
@@ -18,7 +18,7 @@ class QueueMessageServer:
                     nextAction['method'](parametersLen[0])
                 elif(parametersLen == 2):
                     nextAction['method'](parameters[0], parameters[1])
-                if(parametersLen == 3):
+                elif(parametersLen == 3):
                     nextAction['method'](
                         parameters[0], parameters[1], parameters[2])
                 else:

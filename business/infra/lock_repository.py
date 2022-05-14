@@ -7,11 +7,12 @@ class LockRepository:
     def __init__(self):
         self.businessId = businessId
         self.url = lockApiSettings["Url"]
-        self.authenticationKey = lockApiSettings["AuthenticationKey"]
+        self.authenticationHeader = {
+            "auth": lockApiSettings["AuthenticationKey"]}
 
     def lockAccount(self, accountId):
         (statusCode, responseObject) = postFromUrl(
-            self.url + "getLock/"+str(self.businessId)+"/"+str(accountId))
+            self.url + "getLock/"+str(self.businessId)+"/"+str(accountId), headers=self.authenticationHeader)
         if(not isSuccessfulResult(statusCode)):
             if(responseObject == -1):
                 raise Exception("this item is already locked")
@@ -20,7 +21,7 @@ class LockRepository:
 
     def unLockAccount(self, accountId):
         (statusCode, responseObject) = postFromUrl(
-            self.url + "unLock/"+str(self.businessId)+"/"+str(accountId))
+            self.url + "unLock/"+str(self.businessId)+"/"+str(accountId), headers=self.authenticationHeader)
         if(not isSuccessfulResult(statusCode)):
             if(responseObject == -1):
                 raise Exception("this item is locked by another business")

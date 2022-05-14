@@ -17,7 +17,7 @@ def deposit(accountId, amount):
 
 @app.route("/withdrawal/<int:accountId>/<int:amount>", methods=['POST'])
 def withdrawal(accountId, amount):
-    queueService.enqueue(bankService.withdrawal, accountId, amount)
+    queueService.enqueue(bankService.withdrawalWithLock, accountId, amount)
     queueService.executeWhenNeeded()
     return ('', 204)
 
