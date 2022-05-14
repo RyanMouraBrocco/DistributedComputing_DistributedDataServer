@@ -1,4 +1,4 @@
-from business.infra.http_utils import *
+from infra.http_utils import isSuccessfulResult, postFromUrl
 from settings import lockApiSettings, businessId
 
 

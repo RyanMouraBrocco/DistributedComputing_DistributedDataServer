@@ -1,6 +1,5 @@
-from business.infra.lock_repository import LockRepository
-from business.infra.amount_repository import AmountRepository
-from business.presentation.business_server import deposit, withdrawal
+from infra.lock_repository import LockRepository
+from infra.amount_repository import AmountRepository
 
 
 class BankService:
@@ -21,7 +20,7 @@ class BankService:
     def depositWithLock(self, accountId, amount):
         try:
             self.lockRepository.lockAccount(accountId)
-            deposit(accountId, amount)
+            self.deposit(accountId, amount)
         except:
             raise
         finally:
@@ -43,7 +42,7 @@ class BankService:
     def withdrawalWithLock(self, accountId, amount):
         try:
             self.lockRepository.lockAccount(accountId)
-            withdrawal(accountId, amount)
+            self.withdrawal(accountId, amount)
         except:
             raise
         finally:
@@ -56,8 +55,8 @@ class BankService:
         try:
             self.lockRepository.lockAccount(originAccountId)
             self.lockRepository.lockAccount(targetAccountId)
-            withdrawal(originAccountId, amount)
-            deposit(targetAccountId, amount)
+            self.withdrawal(originAccountId, amount)
+            self.deposit(targetAccountId, amount)
         except:
             raise
         finally:
