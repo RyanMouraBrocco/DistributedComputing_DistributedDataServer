@@ -24,7 +24,7 @@ def withdrawal(accountId, amount):
 
 @app.route("/balance/<int:accountId>", methods=['GET'])
 def balance(accountId):
-    return bankService.getBalance(accountId)
+    return str(bankService.getBalance(accountId))
 
 
 @app.route("/transfer/<int:originAccountId>/<int:targetAccountId>/<int:amount>", methods=['POST'])

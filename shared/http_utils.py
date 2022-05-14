@@ -1,6 +1,5 @@
 import requests
 
-
 def getFromUrl(url, headers={}):
     response = requests.get(url, headers=headers)
     return (response.status_code, getResponseValue(response))

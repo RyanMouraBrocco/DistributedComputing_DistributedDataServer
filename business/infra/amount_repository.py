@@ -1,4 +1,4 @@
-from infra.http_utils import getFromUrl, isSuccessfulResult, postFromUrl
+from shared.http_utils import getFromUrl, isSuccessfulResult, postFromUrl
 from settings import amountApiSettings, businessId
 
 
