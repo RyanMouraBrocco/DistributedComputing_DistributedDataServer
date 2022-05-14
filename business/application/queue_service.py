@@ -1,5 +1,6 @@
 from queue import Queue
 
+
 class QueueMessageServer:
     def __init__(self):
         self.queue = Queue(maxsize=10)
@@ -11,4 +12,14 @@ class QueueMessageServer:
         if(self.queue.qsize() >= 5):
             for i in range(0, 5):
                 nextAction = self.queue.get()
-                nextAction['action'](nextAction['parameters'])
+                parameters = nextAction['parameters']
+                parametersLen = len(parameters)
+                if(parametersLen == 1):
+                    nextAction['method'](parametersLen[0])
+                elif(parametersLen == 2):
+                    nextAction['method'](parameters[0], parameters[1])
+                if(parametersLen == 3):
+                    nextAction['method'](
+                        parameters[0], parameters[1], parameters[2])
+                else:
+                    nextAction['method'](parameters)
