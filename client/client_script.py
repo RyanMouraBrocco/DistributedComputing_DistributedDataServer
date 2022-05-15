@@ -1,4 +1,7 @@
 from infra.bank_repository import BankRepository
+from settings import bankApiSettings
+
+clientAuthKey = bankApiSettings["AuthenticationKey"]
 
 
 def printTestResult(test, accountId, succeessfulMessage):
@@ -9,8 +12,18 @@ def printTestResult(test, accountId, succeessfulMessage):
         print(str(e))
 
 
-def checkIfOnlyIn5ActionSaveInformations(accountId):
+def tryRequestWithoutAuthenticaiton(accountId):
     bankRepository = BankRepository()
+    try:
+        bankRepository.deposit(accountId, 10)
+    except:
+        return
+
+    raise Exception('[fail]: access api without authentication')
+
+
+def checkIfOnlyIn5ActionSaveInformations(accountId):
+    bankRepository = BankRepository(clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.deposit(accountId, 10)
@@ -24,7 +37,7 @@ def checkIfOnlyIn5ActionSaveInformations(accountId):
 
 
 def checkDeposits(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.deposit(accountId, 10)
@@ -36,7 +49,7 @@ def checkDeposits(accountId):
 
 
 def tryDepositNegativeValues(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.deposit(accountId, -10)
@@ -48,7 +61,7 @@ def tryDepositNegativeValues(accountId):
 
 
 def checkWithdrawal(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     bankRepository.deposit(accountId, 40)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(4):
@@ -61,7 +74,7 @@ def checkWithdrawal(accountId):
 
 
 def checkWithdrawal(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     bankRepository.deposit(accountId, 40)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(4):
@@ -74,7 +87,7 @@ def checkWithdrawal(accountId):
 
 
 def tryWithdrawalNegativeValues(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.withdrawal(accountId, -10)
@@ -86,7 +99,7 @@ def tryWithdrawalNegativeValues(accountId):
 
 
 def checkInvalidWithdrawal(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.withdrawal(accountId, initialAmount + 1)
@@ -98,7 +111,7 @@ def checkInvalidWithdrawal(accountId):
 
 
 def checkTransfer(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     bankRepository.deposit(40, accountId)
     initialAmountOrigin = bankRepository.getBalance(accountId)
     initialAmountTarget = bankRepository.getBalance(accountId + 1)
@@ -115,7 +128,7 @@ def checkTransfer(accountId):
 
 
 def tryToTransferMoreThanOriginHad(accountId):
-    bankRepository = BankRepository()
+    bankRepository = BankRepository(clientAuthKey)
     initialAmountOrigin = bankRepository.getBalance(accountId)
     initialAmountTarget = bankRepository.getBalance(accountId + 1)
     for i in range(5):
@@ -134,7 +147,8 @@ def __init__():
     accountId = 1
 
     # auth test
-    
+    printTestResult(tryRequestWithoutAuthenticaiton,
+                    accountId, '[success]: authentication is necessary')
 
     # operations test
 

@@ -1,9 +1,11 @@
 from shared.http_utils import getFromUrl, isSuccessfulResult, postFromUrl
+from settings import bankApiSettings
 
 
 class BankRepository:
-    def __init__(self):
-        self.authenticationHeader = {}
+    def __init__(self, authKey):
+        self.url = bankApiSettings["Url"]
+        self.authenticationHeader = {"auth": authKey}
 
     def deposit(self, accountId, amount):
         (statusCode, responseObject) = postFromUrl(
