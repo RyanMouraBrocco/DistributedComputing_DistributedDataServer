@@ -1,7 +1,7 @@
 from shared.http_utils import getFromUrl, isSuccessfulResult, postFromUrl
 
 
-class BackRepository:
+class BankRepository:
     def __init__(self):
         self.authenticationHeader = {}
 

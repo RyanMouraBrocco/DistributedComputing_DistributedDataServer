@@ -1,6 +1,7 @@
 from threading import Lock
 from flask import Flask
-from auth_middleware import authMiddleware
+from shared.auth_middleware import authMiddleware
+from settings import authKeys
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ database = {
     }
 }
 
-app.wsgi_app = authMiddleware(app.wsgi_app)
+app.wsgi_app = authMiddleware(app.wsgi_app, authKeys)
 
 
 def lockTable(tableName):

@@ -1,11 +1,14 @@
 from flask import Flask
 from application.bank_service import BankService
 from application.queue_service import QueueMessageServer
+from shared.auth_middleware import authMiddleware
+from settings import authKeys
 
 
 app = Flask(__name__)
 bankService = BankService()
 queueService = QueueMessageServer()
+app.wsgi_app = authMiddleware(app.wsgi_app, authKeys)
 
 
 @app.route("/deposit/<int:accountId>/<int:amount>", methods=['POST'])
