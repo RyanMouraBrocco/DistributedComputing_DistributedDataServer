@@ -1,3 +1,4 @@
+from concurrent.futures import process
 from shared.auth_middleware import authMiddleware
 from threading import Lock
 from flask import Flask
@@ -109,4 +110,4 @@ def getAmount(businessId, accountId):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(threaded=True, process=10)

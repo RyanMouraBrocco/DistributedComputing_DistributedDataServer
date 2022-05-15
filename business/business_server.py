@@ -1,3 +1,4 @@
+from concurrent.futures import process
 from flask import Flask
 from application.bank_service import BankService
 from application.queue_service import QueueMessageServer
@@ -39,4 +40,4 @@ def transfer(originAccountId, targetAccountId, amount):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(threaded=True, process=10)
