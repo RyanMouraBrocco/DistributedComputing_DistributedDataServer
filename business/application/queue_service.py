@@ -11,6 +11,12 @@ class QueueMessageServer:
     def executeWhenNeeded(self):
         while(self.queue.qsize() >= 5):
             for i in range(0, 5):
+                self.runNextAction()
+
+    def runNextAction(self):
+        tryAgain = True
+        while tryAgain:
+            try:
                 nextAction = self.queue.get()
                 parameters = nextAction['parameters']
                 parametersLen = len(parameters)
@@ -23,3 +29,8 @@ class QueueMessageServer:
                         parameters[0], parameters[1], parameters[2])
                 else:
                     nextAction['method'](parameters)
+
+                tryAgain = False
+            except Exception as e:
+                if('is locked' not in str(e)):
+                    tryAgain = False
