@@ -1,5 +1,8 @@
+from multiprocessing.connection import wait
+import threading
 from infra.bank_repository import BankRepository
 from settings import bankApiSettings
+import asyncio
 
 clientAuthKey = bankApiSettings["AuthenticationKey"]
 
@@ -118,25 +121,55 @@ def tryToTransferMoreThanOriginHad(accountId):
         raise Exception(
             '[fail]: unexpect transfer')
 
+
+semaphore = threading.Semaphore(100)
+
+
 def concurrentRequests(accountId):
+    bankRepository = BankRepository(clientAuthKey)
+    initialAmout = bankRepository.getBalance(accountId)
+
+    for i in range(500):
+        operationsThatNotChangeTheFinalAmount(accountId)
+
+    currentAmount = bankRepository.getBalance(accountId)
+    if(initialAmout != currentAmount):
+        raise Exception('[fail]: some parallel operation didnt work')
+
+
+def operationsThatNotChangeTheFinalAmount(accountId):
+    bankRepository = BankRepository(clientAuthKey)
+    bankRepository.deposit(accountId, 200)
+    bankRepository.withdrawal(accountId, 100)
+    bankRepository.deposit(accountId, 50)
+    bankRepository.withdrawal(accountId, 50)
+    bankRepository.transfer(accountId, accountId + 1, 100)
 
 
 accountId = 1
 
-# auth test
-printTestResult(tryRequestWithoutAuthenticaiton,
-                accountId, '[success]: authentication is necessary')
+print('select the type, type 1 func test, type 2 cocurrent test')
+type = int(input())
 
-# operations test
+if type == 1:
+    # auth test
+    printTestResult(tryRequestWithoutAuthenticaiton,
+                    accountId, '[success]: authentication is necessary')
 
-printTestResult(checkIfOnlyIn5ActionSaveInformations, accountId,
-                '[success]: in check if only in 5 action the business api would save the information')
-printTestResult(checkDeposits, accountId, '[success]: deposit works')
-printTestResult(checkWithdrawal, accountId, '[success]: withdrawal works')
-printTestResult(checkInvalidWithdrawal, accountId,
-                '[success]: limit in withdrawal works')
-printTestResult(checkTransfer, accountId, '[success]: transfer works')
-printTestResult(tryToTransferMoreThanOriginHad, accountId,
-                '[success]: not transfer if origin not have enough amount')
+    # operations test
 
-# concurrency test
+    printTestResult(checkIfOnlyIn5ActionSaveInformations, accountId,
+                    '[success]: in check if only in 5 action the business api would save the information')
+    printTestResult(checkDeposits, accountId, '[success]: deposit works')
+    printTestResult(checkWithdrawal, accountId, '[success]: withdrawal works')
+    printTestResult(checkInvalidWithdrawal, accountId,
+                    '[success]: limit in withdrawal works')
+    printTestResult(checkTransfer, accountId, '[success]: transfer works')
+    printTestResult(tryToTransferMoreThanOriginHad, accountId,
+                    '[success]: not transfer if origin not have enough amount')
+elif type == 2:
+    # concurrency test
+    printTestResult(concurrentRequests, accountId,
+                    '[success]: concurrent test is ok')
+else:
+    print('invalid type')
