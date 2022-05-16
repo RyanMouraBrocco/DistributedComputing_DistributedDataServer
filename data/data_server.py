@@ -15,7 +15,7 @@ database = {
     }
 }
 
-#app.wsgi_app = authMiddleware(app.wsgi_app, authKeys)
+app.wsgi_app = authMiddleware(app.wsgi_app, authKeys)
 
 
 def lockTable(tableName):
@@ -110,4 +110,4 @@ def getAmount(businessId, accountId):
 
 
 if __name__ == "__main__":
-    app.run(threaded=True, process=10)
+    app.run()

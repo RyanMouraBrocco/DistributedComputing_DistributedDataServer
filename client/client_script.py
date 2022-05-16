@@ -1,8 +1,6 @@
-from multiprocessing.connection import wait
 import threading
 from infra.bank_repository import BankRepository
 from settings import bankApiSettings
-import asyncio
 
 clientAuthKey = bankApiSettings["AuthenticationKey"]
 
@@ -16,7 +14,7 @@ def printTestResult(test, accountId, succeessfulMessage):
 
 
 def tryRequestWithoutAuthenticaiton(accountId):
-    bankRepository = BankRepository("")
+    bankRepository = BankRepository(url, "")
     try:
         bankRepository.deposit(accountId, 10)
     except:
@@ -26,7 +24,7 @@ def tryRequestWithoutAuthenticaiton(accountId):
 
 
 def checkIfOnlyIn5ActionSaveInformations(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.deposit(accountId, 10)
@@ -40,7 +38,7 @@ def checkIfOnlyIn5ActionSaveInformations(accountId):
 
 
 def checkDeposits(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.deposit(accountId, 10)
@@ -52,7 +50,7 @@ def checkDeposits(accountId):
 
 
 def checkWithdrawal(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     bankRepository.deposit(accountId, 40)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(4):
@@ -65,7 +63,7 @@ def checkWithdrawal(accountId):
 
 
 def checkWithdrawal(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     bankRepository.deposit(accountId, 40)
     for i in range(4):
@@ -78,7 +76,7 @@ def checkWithdrawal(accountId):
 
 
 def checkInvalidWithdrawal(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmount = bankRepository.getBalance(accountId)
     for i in range(5):
         bankRepository.withdrawal(accountId, int(initialAmount + 1))
@@ -90,7 +88,7 @@ def checkInvalidWithdrawal(accountId):
 
 
 def checkTransfer(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmountOrigin = bankRepository.getBalance(accountId)
     initialAmountTarget = bankRepository.getBalance(accountId + 1)
     bankRepository.deposit(accountId, 40)
@@ -107,7 +105,7 @@ def checkTransfer(accountId):
 
 
 def tryToTransferMoreThanOriginHad(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmountOrigin = bankRepository.getBalance(accountId)
     initialAmountTarget = bankRepository.getBalance(accountId + 1)
     for i in range(5):
@@ -126,7 +124,7 @@ semaphore = threading.Semaphore(100)
 
 
 def concurrentRequests(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     initialAmout = bankRepository.getBalance(accountId)
 
     for i in range(500):
@@ -138,7 +136,7 @@ def concurrentRequests(accountId):
 
 
 def operationsThatNotChangeTheFinalAmount(accountId):
-    bankRepository = BankRepository(clientAuthKey)
+    bankRepository = BankRepository(url, clientAuthKey)
     bankRepository.deposit(accountId, 200)
     bankRepository.withdrawal(accountId, 100)
     bankRepository.deposit(accountId, 50)
@@ -146,10 +144,16 @@ def operationsThatNotChangeTheFinalAmount(accountId):
     bankRepository.transfer(accountId, accountId + 1, 100)
 
 
-accountId = 1
-
 print('select the type, type 1 func test, type 2 cocurrent test')
 type = int(input())
+
+print('write the accountid')
+accountId = int(input())
+
+print('write url')
+url = input()
+
+
 
 if type == 1:
     # auth test

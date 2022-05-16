@@ -15,9 +15,9 @@ class QueueMessageServer:
 
     def runNextAction(self):
         tryAgain = True
+        nextAction = self.queue.get()
         while tryAgain:
             try:
-                nextAction = self.queue.get()
                 parameters = nextAction['parameters']
                 parametersLen = len(parameters)
                 if(parametersLen == 1):
