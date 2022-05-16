@@ -127,7 +127,7 @@ def concurrentRequests(accountId):
     bankRepository = BankRepository(url, clientAuthKey)
     initialAmout = bankRepository.getBalance(accountId)
 
-    for i in range(500):
+    for i in range(5):
         operationsThatNotChangeTheFinalAmount(accountId)
 
     currentAmount = bankRepository.getBalance(accountId)
