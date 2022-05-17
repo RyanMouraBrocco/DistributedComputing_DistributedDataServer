@@ -27,7 +27,7 @@ server used to control of data, here simule a database in memory.
 │       data_server.py
 ```
 
-To use a simple code only in one file simulating a low level programming for "high" processing
+To use a simple code only in one file simulating a low level programming for "high" performance
 
 ### EndPoints
 
@@ -43,7 +43,19 @@ To use a simple code only in one file simulating a low level programming for "hi
 
 ### Authentication
 
+The authentication is by hardcode keys and is validated in a middleware in shared folder
+
 ### Settings config
+
+To run this part of system is necessary a config file like this
+
+/data/settings.py
+```python
+authKey = [
+    'YOUR KEY HERE',
+    'YOUR OTHER KEY HERE'
+]
+```
 
 ## Business
 
@@ -83,15 +95,97 @@ EndPoint
 
 ### Application
 
+This is the logical part of code, here is responsible to apply the business rule of deposit, withdrawal, the queue of 5 operations before save in data server
+
 ### Infrastrucure
+
+This is the part of data access of the system, here was divided in 2 repositories, the amount and the lock repository each one with a differents settings, this choose was taken thinking in a modular code and microservices applications
 
 ### Authentication
 
+The authentication is by hardcode keys and is validated in a middleware in shared folder
+
 ### Settings Config
+
+To run this part of system is necessary a config file like this
+
+/business/settings.py
+```python
+businessId = 2 #YOUR BUSINESSID HERE
+
+authKey = [
+    'YOUR KEY HERE',
+    'YOUR OTHER KEY HERE'
+]
+
+amountApiSettings = {
+    "URL" = "YOUR DATA SERVER URL",
+    "AuthenticationKey" = "YOUR DATA SERVER AUTHENTICATION KEY"
+}
+
+lockApiSettings = {
+    "URL" = "YOUR DATA SERVER URL",
+    "AuthenticationKey" = "YOUR DATA SERVER AUTHENTICATION KEY"
+}
+```
 
 ## Client
 
+```
+├───client
+│   │   client_script.py
+│   │
+│   └───infra
+│           bank_repository.py
+```
+
+This part of code was designed to be a test script using a infra layer to access the business server. Here it will test
+
+* Authentication necessity
+* If queue works
+* If deposits works
+* If withdrawal works
+* If transfer works
+* Concurrent requests
+
+### Settings config
+
+To run this part of system is necessary a config file like this
+
+/client/settings.py
+```python
+bankApiSettings = {
+    "AuthenticationKey" = "YOUR BUSINESS SERVER AUTHENTICATION KEY"
+}
+```
+
 ## Shared
+
+```
+└───shared
+        auth_middleware.py
+        http_utils.py
+```
+Here has a shared utils files like a middleware to authentication by fixed keys (used by data server and business server) and a http requests and validation util file (used by client and business server)
+
+# To Run
+
+To run this code first of all, it is necessary to set a $PYTHONPATH with the command
+```bash
+export PYTHONPATH = $PYTHONPATH:/YOUR DIRECTORY PATH/DistributedComputing_DistributedDataServer/shared
+```
+
+And to run the web applications uses:
+```bash
+FLASK_APP={business/business_server OR data/business_server} flask run
+```
+
+or use this tutorial to ser up your visual studio code https://code.visualstudio.com/docs/python/tutorial-flask
+
+And to run the client test uses:
+```bash
+python client/client_script.py
+```
 
 # Tests
 the following videos show the system working
