@@ -165,8 +165,9 @@ bankApiSettings = {
 └───shared
         auth_middleware.py
         http_utils.py
+        log_repository.py
 ```
-Here has a shared utils files like a middleware to authentication by fixed keys (used by data server and business server) and a http requests and validation util file (used by client and business server)
+Here has a shared utils files like a middleware to authentication by fixed keys (used by data server and business server) and a http requests and validation util file (used by client and business server) and log repository (used by data server and business server)
 
 # To Run
 
@@ -198,3 +199,6 @@ part 2: https://www.loom.com/share/bd1d1b2d3eb1402ca3c37c868f4f0237
 
 ### Images of logs
 
+Print of log.txt generated from log_repository.py in data server and business server
+
+![](/imgs/logs_test.png)

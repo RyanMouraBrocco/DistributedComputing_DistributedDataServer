@@ -17,6 +17,12 @@ database = {
     }
 }
 
+
+def initAccounts():
+    for i in range(1, 11):
+        createIfNotExistsItemInAccount(0, i, 1000)
+
+
 app.wsgi_app = authMiddleware(app.wsgi_app, authKeys)
 
 
@@ -40,12 +46,12 @@ def getValueInTableById(tableName, id):
     return database[tableName]["data"][id]
 
 
-def createIfNotExistsItemInAccount(businessId, accountId):
+def createIfNotExistsItemInAccount(businessId, accountId, initialAmount=0):
     lockTable('accounts')
 
     if(not accountId in database["accounts"]["data"].keys()):
         database["accounts"]["data"][accountId] = {
-            "amount": 0,
+            "amount": initialAmount,
             "state": {"locked": False, "owner": businessId},
             "lock": Lock()
         }
@@ -120,6 +126,8 @@ def getAmount(businessId, accountId):
     log('getAmount', businessId, accountId)
     return str(account["amount"])
 
+
+initAccounts()
 
 if __name__ == "__main__":
     app.run()
