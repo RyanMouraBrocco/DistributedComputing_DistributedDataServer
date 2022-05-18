@@ -30,7 +30,7 @@ class BankService:
         try:
             self.lockRepository.lockAccount(accountId)
             self.deposit(accountId, amount)
-            self.log(self, 'deposit', accountId, amount=amount)
+            self.log('deposit', accountId, amount=amount)
         except:
             raise
         finally:
@@ -53,14 +53,14 @@ class BankService:
         try:
             self.lockRepository.lockAccount(accountId)
             self.withdrawal(accountId, amount)
-            self.log(self, 'withdrawal', accountId, amount=amount)
+            self.log('withdrawal', accountId, amount=amount)
         except:
             raise
         finally:
             self.lockRepository.unLockAccount(accountId)
 
     def getBalance(self, accountId):
-        self.log(self, 'getBalance', accountId)
+        self.log('getBalance', accountId)
         return self.amountRepository.getCurrentAmountValueByAccount(accountId)
 
     def transfer(self, originAccountId, targetAccountId, amount):
@@ -69,7 +69,7 @@ class BankService:
             self.lockRepository.lockAccount(targetAccountId)
             self.withdrawal(originAccountId, amount)
             self.deposit(targetAccountId, amount)
-            self.log(self, 'transfer', originAccountId,
+            self.log('transfer', originAccountId,
                      targetAccountId, amount)
         except:
             raise

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from threading import Lock
 
 
@@ -14,12 +14,12 @@ class LogRepository():
 
         try:
             with open(self.fileName, "a") as file:
-                file.write(self.getBaseLogsInfos(self) + message)
+                file.write(self.getBaseLogsInfos() + message + '\n')
             self.operation += 1
-        except:
+        except Exception as e:
             print('Error to save log')
         finally:
             self.lock.release()
 
     def getBaseLogsInfos(self):
-        return str(datetime.timestamp(datetime.now())) + ',' + str(self.operation) + ','
+        return datetime.now().strftime("%d-%b-%Y (%H:%M:%S.%f)") + ',' + str(self.operation) + ','

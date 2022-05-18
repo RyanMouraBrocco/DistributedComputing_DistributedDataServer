@@ -172,12 +172,14 @@ Here has a shared utils files like a middleware to authentication by fixed keys 
 
 To run this code first of all, it is necessary to set a $PYTHONPATH with the command
 ```bash
-export PYTHONPATH = $PYTHONPATH:/YOUR DIRECTORY PATH/DistributedComputing_DistributedDataServer/shared
+export PYTHONPATH=$PYTHONPATH:/YOUR DIRECTORY PATH/DistributedComputing_DistributedDataServer/shared
+export PYTHONPATH=$PYTHONPATH:/YOUR DIRECTORY PATH/DistributedComputing_DistributedDataServer/data
+export PYTHONPATH=$PYTHONPATH:/YOUR DIRECTORY PATH/DistributedComputing_DistributedDataServer/business
 ```
 
 And to run the web applications uses:
 ```bash
-FLASK_APP={business/business_server OR data/business_server} flask run
+FLASK_APP={business/business_server OR data/data_server} flask run
 ```
 
 or use this tutorial to ser up your visual studio code https://code.visualstudio.com/docs/python/tutorial-flask
