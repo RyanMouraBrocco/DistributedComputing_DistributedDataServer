@@ -9,11 +9,6 @@ class LogRepository():
         self.lock = Lock()
         self.operation = 1
 
-    def __init__(self, fileName):
-        self.fileName = fileName
-        self.lock = Lock()
-        self.operation = 1
-
     def log(self, message):
         self.lock.acquire()
 
