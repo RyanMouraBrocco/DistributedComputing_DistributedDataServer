@@ -1,10 +1,12 @@
-from concurrent.futures import process
 from shared.auth_middleware import authMiddleware
 from threading import Lock
 from flask import Flask
 from settings import authKeys
+from shared.log_repository import LogRepository
 
 app = Flask(__name__)
+
+logRepository = LogRepository()
 
 # this object is like a database with tables, then it has the lock in whole table and lock by id index
 # in this case lock in table is just used to add new value, i can edit some value even the table is in lock
@@ -51,6 +53,12 @@ def createIfNotExistsItemInAccount(businessId, accountId):
     unLockTable('accounts')
 
 
+def log(logName, businessId, accountId, amount=None):
+    amountString = str(amount) if amount != None else 'NULL'
+    logRepository.log(str(businessId) + ',' + logName +
+                      ',' + str(accountId) + ',' + amountString)
+
+
 @app.route("/getLock/<int:businessId>/<int:accountId>", methods=['POST'])
 def getLock(businessId, accountId):
     createIfNotExistsItemInAccount(businessId, accountId)
@@ -64,6 +72,7 @@ def getLock(businessId, accountId):
     account["state"]["locked"] = True
     account["state"]["owner"] = businessId
     unLockItemInTable('accounts', accountId)
+    log('getLock', businessId, accountId)
     return ('', 204)
 
 
@@ -79,6 +88,7 @@ def unLock(businessId, accountId):
 
     account["state"]["locked"] = False
     unLockItemInTable('accounts', accountId)
+    log('unLock', businessId, accountId)
     return ('', 204)
 
 
@@ -95,6 +105,7 @@ def setAmount(businessId, accountId, amount):
 
     account["amount"] = amount
     unLockItemInTable('accounts', accountId)
+    log('setAmount', businessId, accountId, amount)
     return ('', 204)
 
 
@@ -106,6 +117,7 @@ def getAmount(businessId, accountId):
     if(account["state"]["locked"] and account["state"]["owner"] != businessId):
         return ("-1", 401)
 
+    log('getAmount', businessId, accountId)
     return str(account["amount"])
 
 
